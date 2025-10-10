@@ -1,0 +1,6 @@
+mongo_data/
+mysql_data/
+backup.sql
+nextjs_app/node_modules/
+nextjs_app/.next/
+node_app/node_modules/

@@ -1,0 +1,7 @@
+flask
+flask_sqlalchemy
+mysqlclient
+pymongo
+flask-cors
+werkzeug
+flask-jwt-extended
