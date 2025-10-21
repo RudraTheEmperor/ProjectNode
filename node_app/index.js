@@ -1,20 +1,20 @@
-const express = require("express");
-const mysql = require("mysql2/promise");
-const jwt = require("jsonwebtoken");
-const cors = require("cors");
-
+import express from "express";
+import mysql from "mysql2/promise";
+import jwt from "jsonwebtoken";
+import cors from "cors";
+// 🚀 Inicialização
 const app = express();
 const PORT = 3001;
 
-
-const JWT_SECRET = "asdihoashdoiashdoiq1h8h0-18h081d081h0dh18idh0has0dih0asd"; // troque por algo seguro
-const API_KEY = "my-secret-api-key"; // sua API key estática
-
-app.use(express.json()); // For Express 4.16.0 and above
+// ✅ Middleware
 app.use(cors());
+app.use(express.json());
 
+// 🔑 Configurações
+const JWT_SECRET = "asdihoashdoiashdoiq1h8h0-18h081d081h0dh18idh0has0dih0asd"; // troque por algo seguro
+const API_KEY = "d190981dh0891h0dihasoidhoiwh01ihd01ihd"; // sua API key estática
 
-//// Configuração do MySQL
+// 💾 Configuração do MySQL
 const dbConfig = {
   host: "mysql",
   user: "appuser",
@@ -22,10 +22,10 @@ const dbConfig = {
   database: "appdb"
 };
 
-// Middleware para verificar JWT
+// 🧠 Middleware para verificar JWT
 function authenticateJWT(req, res, next) {
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader) {
     return res.status(401).json({ error: "Token não fornecido" });
   }
@@ -41,7 +41,7 @@ function authenticateJWT(req, res, next) {
   });
 }
 
-// Endpoint para gerar token usando API Key
+// 🔑 Endpoint para gerar token usando API Key
 app.post("/auth", (req, res) => {
   const { apiKey } = req.body;
 
@@ -49,21 +49,19 @@ app.post("/auth", (req, res) => {
     return res.status(403).json({ error: "API Key inválida" });
   }
 
-  // Aqui você pode incluir dados do usuário, permissões, etc.
   const payload = { role: "admin", name: "API User" };
-
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
 
   res.json({ token });
 });
 
-// Página inicial
+// 🏠 Página inicial
 app.get("/", (req, res) => {
-  res.send("<h1>📖 API de Clientes com JWT + API Key</h1><p><a href='http://localhost:3000/login'>Ir para a Página de Login</a></p>");
+  res.send("<h1>📖 API de Clientes com JWT + API Key</h1>");
 });
 
-// Listar clientes (protegido com JWT)
-app.get("/api/v1/cliente", authenticateJWT, async (req, res) => {
+// 🔓 Listar clientes (público)
+app.get("/api/v1/cliente", async (req, res) => {
   try {
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute("SELECT * FROM clientes");
@@ -73,8 +71,6 @@ app.get("/api/v1/cliente", authenticateJWT, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 // 🔒 Criar cliente (protegido com JWT)
 app.post("/api/v1/cliente", authenticateJWT, async (req, res) => {
@@ -120,6 +116,7 @@ app.delete("/api/v1/cliente/:id", authenticateJWT, async (req, res) => {
   }
 });
 
+// 🚀 Inicialização do servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor Node rodando na porta ${PORT}`);
 });
